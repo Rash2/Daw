@@ -1,0 +1,35 @@
+﻿using Notes_App.Entities;
+using Notes_App.IRepositories;
+using Notes_App.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+
+namespace Notes_App.Repositories
+{
+    public class NoteRepository : GenericRepository<Note>, INoteRepository
+    {
+        public NoteRepository(Context context) : base(context)
+        {
+
+        }
+
+        public Note GetNoteAllDetails(int id)
+        {
+            return _table.Where(arg => arg.NoteId == id)
+                .Include(note => note.User)
+                .Include(note => note.Category)
+                .FirstOrDefault();
+        }
+
+        public List<Note> GetNotesAllDetails()
+        {
+            return _table
+                .Include(note => note.Category)
+                .Include(note => note.User)
+                .ToList();
+        }
+    }
+}
